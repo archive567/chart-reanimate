@@ -1,0 +1,5 @@
+packages:
+  chart-reanimate.cabal
+  ../chart-svg/chart-svg.cabal
+
+allow-newer: true
