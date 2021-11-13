@@ -12,7 +12,7 @@ module Chart.Reanimate
     ChartReanimate (..),
     chartReanimate,
     toTreeA,
-    tree,
+    Chart.Reanimate.tree,
     treeFromFile,
   )
 where
@@ -27,11 +27,8 @@ import Reanimate as Re
 import Data.Text (Text, unpack)
 import GHC.Generics
 import Data.Maybe
-import Chart.Svg (cssShapeRendering, cssPreferColorScheme)
-import Data.List.NonEmpty (fromList, toList)
+import Data.List.NonEmpty (toList)
 import Linear.V2 as Linear
-import qualified NumHask.Space as Space
-import qualified Data.Tree as Tree
 import Optics.Core
 import qualified Control.Lens as L
 
@@ -49,21 +46,6 @@ toPathCommand (ArcP (ArcInfo (C.Point rx ry) phi' l sw) p) =
 
 toV2 :: C.Point a -> Linear.V2 a
 toV2 (C.Point x y) = Linear.V2 x y
-
-renderToCRS :: SvgOptions -> Tree.Tree ChartNode -> ([Chart], Rect Double, C.Point Double)
-renderToCRS so cs = (view charts' cs', rect', size')
-  where
-    rect' = fmap ((so ^. #aspectBasis) *) $ styleBoxes (view charts' cs') & maybe id padRect (so ^. #outerPad)
-    C.Point w h = width rect'
-    size' = C.Point ((so ^. #svgHeight) / h * w) (so ^. #svgHeight)
-    cs' = runHud (initialCanvas (so ^. #chartAspect) (view charts' cs)) hs cs
-    hs = [ fromEffect 1000 $ applyChartAspect (so ^. #chartAspect) (so ^. #aspectBasis)]
-
--- | calculation of the canvas given the 'ChartAspect'
-initialCanvas :: ChartAspect -> [Chart] -> Rect Double
-initialCanvas (FixedAspect a) _ = aspect a
-initialCanvas (CanvasAspect a) _ = aspect a
-initialCanvas ChartAspect cs = boxes cs
 
 -- | global reanimate configuration.
 --
@@ -111,10 +93,12 @@ data ChartReanimate = ChartReanimate
 chartReanimate :: ChartSvg -> ChartReanimate
 chartReanimate cs = ChartReanimate ts rect' size'
   where
-    (cl'', rect', size') = renderToCRS so cl'
-    so = view #svgOptions cs
-    cl' = toCharts cs
-    ts = tree <$> cl''
+    cs' = toCharts cs
+    ts = Chart.Reanimate.tree <$> foldOf charts' cs'
+    rect' = view styleBox' cs'
+    C.Point w h = width rect'
+    height = view (#svgOptions % #svgHeight) cs
+    size' = C.Point (height / h * w) height
 
 -- | convert a ChartSvg animation to a Tree animation.
 toTreeA :: ReanimateConfig -> (Double -> ChartSvg) -> Double -> Tree

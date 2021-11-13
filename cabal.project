@@ -1,5 +1,9 @@
 packages:
   chart-reanimate.cabal
-  ../chart-svg/chart-svg.cabal
+
+source-repository-package
+    type: git
+    location: https://github.com/tonyday567/chart-svg
+    tag: 3a77f81d67fb78212d2123fe397db8bb836f3aae
 
 allow-newer: true
