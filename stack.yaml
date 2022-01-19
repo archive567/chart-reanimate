@@ -1,0 +1,15 @@
+resolver: lts-18.15
+
+allow-newer: true
+
+packages:
+- .
+- ../chart-svg
+- ../formatn
+- ../numhask-space
+
+extra-deps:
+- numhask-0.8.1.0@sha256:5a66f6737e5adf701e6ceaa078d4afc83653ad6f94ca54a9c3b96958f056b8d2,1624
+- numhask-array-0.9.1@sha256:8bf624b7bf9b40cbf2aea78566aaa5e26571b4a9a622ea2512cc52f92ce54594,1686
+- optics-core-0.4@sha256:59e04aebca536bd011ae50c781937f45af4c1456af1eb9fb578f9a69eee293cd,4995
+- random-1.2.0@sha256:195506fedaa7c31c1fa2a747e9b49b4a5d1f0b09dd8f1291f23a771656faeec3,6097

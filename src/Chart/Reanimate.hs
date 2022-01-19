@@ -27,7 +27,6 @@ import Reanimate as Re
 import Data.Text (Text, unpack)
 import GHC.Generics
 import Data.Maybe
-import Data.List.NonEmpty (toList)
 import Linear.V2 as Linear
 import Optics.Core
 import qualified Control.Lens as L
@@ -95,7 +94,7 @@ chartReanimate cs = ChartReanimate ts rect' size'
   where
     cs' = toCharts cs
     ts = Chart.Reanimate.tree <$> foldOf charts' cs'
-    rect' = view styleBox' cs'
+    rect' = singletonGuard $ view styleBox' cs'
     C.Point w h = width rect'
     height = view (#svgOptions % #svgHeight) cs
     size' = C.Point (height / h * w) height
@@ -234,15 +233,15 @@ treePath s =
 -- | convert a 'Chart' to a 'Tree'
 tree :: Chart -> Tree
 tree (TextChart s xs) =
-  groupTrees (daText s) (toList $ uncurry (treeText s) <$> xs)
+  groupTrees (daText s) (uncurry (treeText s) <$> xs)
 tree (GlyphChart s xs) =
-  groupTrees (daGlyph s) (toList $ treeGlyph s <$> xs)
+  groupTrees (daGlyph s) (treeGlyph s <$> xs)
 tree (LineChart s xs) =
-  groupTrees (daLine s) (toList $ treeLine . toList <$> xs)
+  groupTrees (daLine s) (treeLine <$> xs)
 tree (RectChart s xs) =
-  groupTrees (daRect s) (treeRect <$> toList xs)
+  groupTrees (daRect s) (treeRect <$> xs)
 tree (PathChart s xs) =
-  groupTrees (daPath s) [treePath (toList xs)]
+  groupTrees (daPath s) [treePath xs]
 tree (BlankChart _) = defaultSvg
 
 -- | add drawing attributes as a group svg wrapping a [Tree]
