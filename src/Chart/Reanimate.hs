@@ -17,7 +17,7 @@ module Chart.Reanimate
   )
 where
 
-import Chart as C hiding (Line, box)
+import Chart as C hiding (Line, box, OriginAbsolute, EllipticalArc, QuadraticBezier, PathCommand (..))
 import Codec.Picture.Types
 import qualified Data.Attoparsec.Text as A
 import Graphics.SvgTree as Svg hiding (Text)
@@ -92,7 +92,7 @@ data ChartReanimate = ChartReanimate
 chartReanimate :: ChartSvg -> ChartReanimate
 chartReanimate cs = ChartReanimate ts rect' size'
   where
-    cs' = toCharts cs
+    cs' = toChartTree cs
     ts = Chart.Reanimate.tree <$> foldOf charts' cs'
     rect' = singletonGuard $ view styleBox' cs'
     C.Point w h = width rect'
