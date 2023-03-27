@@ -1,4 +1,10 @@
 packages:
   chart-reanimate.cabal
+  ../chart-svg/chart-svg.cabal
+  ../reanimate-svg/reanimate-svg.cabal
 
-allow-newer: true
+allow-newer:
+  geojson:text,
+  reanimate:aeson
+
+-- cabal build --ghc-options=-fsimpl-tick-factor=200
